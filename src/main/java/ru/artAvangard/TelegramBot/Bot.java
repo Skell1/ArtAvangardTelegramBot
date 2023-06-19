@@ -1,7 +1,9 @@
 package ru.artAvangard.TelegramBot;
 
+import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,13 +14,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class Bot extends TelegramLongPollingBot {
 
+    @Autowired
     final BotConfig config;
 
-    public Bot(BotConfig config) { this.config = config; }
+    public Bot(BotConfig config) {
+        super(config.getToken());
+        this.config = config;
+    }
     @Override
     public String getBotUsername() { return config.getBotName(); }
-    @Override
-    public String getBotToken() { return config.getToken(); }
+
     @Override
     public void onUpdateReceived(@NotNull Update update) {
         if(update.hasMessage() && update.getMessage().hasText()){
