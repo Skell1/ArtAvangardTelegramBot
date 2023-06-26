@@ -23,7 +23,7 @@ public class BotService {
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void saveMessage(String text) throws JsonProcessingException {
-        bot.sendMsg(text);
+    public void saveMessage(String text)  {
+        bot.sendMsgInGroup(text);
     }
 }

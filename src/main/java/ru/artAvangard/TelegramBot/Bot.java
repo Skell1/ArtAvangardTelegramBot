@@ -31,11 +31,10 @@ public class Bot extends TelegramLongPollingBot {
             long chatId = update.getMessage().getChatId();
             String memberName = update.getMessage().getFrom().getFirstName();
 
-            switch (messageText){
-                case "/start":
-                    startBot(chatId, memberName);
-                    break;
-                default: log.info("Unexpected message");
+            switch (messageText) {
+                case "/start" -> startBot(chatId, memberName);
+                case "/getChatId" -> sendMsg(chatId, "" + chatId);
+                default -> log.info("Unexpected message");
             }
         }
     }
@@ -43,7 +42,7 @@ public class Bot extends TelegramLongPollingBot {
     private void startBot(long chatId, String userName) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText("Hello, " + userName + "! I'm a Telegram bot." + chatId);
+        message.setText("Hello, " + userName + "! I'm a Telegram bot.");
 
         try {
             execute(message);
@@ -53,7 +52,19 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    protected void sendMsg(String text){
+    protected void sendMsg(long chatId, String text) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText(text);
+        try {
+            execute(message);
+            log.info("Reply sent");
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    protected void sendMsgInGroup(String text){
         SendMessage message = new SendMessage();
         message.setChatId(config.getGroupChatId());
         message.setText(text);
